@@ -1,9 +1,25 @@
+<script>
+// @ is an alias to /src
+import MainNav from "@/components/MainNav.vue";
+
+export default {
+  components: {
+    MainNav,
+  },
+  data() {
+    return { week_selected: null };
+  },
+  methods: {
+    setWeek(value) {
+      this.week_selected = value;
+    },
+  },
+};
+</script>
+
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view />
+  <MainNav />
+  <router-view :week_selected="week_selected" @set-week="setWeek" />
 </template>
 
 <style lang="scss">
@@ -13,18 +29,5 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
 }
 </style>
