@@ -1,8 +1,9 @@
 <script>
 // @ is an alias to /src
+
 const dayjs = require("dayjs");
 var weekOfYear = require("dayjs/plugin/weekOfYear");
-var weekYear = require("dayjs/plugin/weekYear");
+
 import axios from "axios";
 
 export default {
@@ -10,58 +11,59 @@ export default {
   components: {},
   data() {
     return {
-      week: 0,
+      selected_week: { week: 0 },
       weeks: [],
       services: [],
       selected_service: {},
-      is_active: false,
+      selected_service_details: {},
+      users: [],
     };
   },
   mounted() {
     this.loadServices();
-    this.addMoreWeeks();
+    this.loadUsers();
   },
   methods: {
     loadServices() {
       axios
         .get("http://127.0.0.1:3000/monitoring_services")
         .then((response) => {
-          console.log(response.data);
-          this.services = response.data;
+          this.services = response.data.monitoring_services;
+          this.selected_service = this.services[0];
+          this.weeks = response.data.weeks;
+          this.setWeek();
         });
     },
-    addMoreWeeks() {
+    loadServiceDetail() {
+      axios
+        .get(
+          `http://127.0.0.1:3000/monitoring_services/${this.selected_service.id}`
+        )
+        .then((response) => {
+          this.selected_service_details = response.data;
+        });
+    },
+    loadUsers() {
+      axios.get("http://127.0.0.1:3000/users").then((response) => {
+        this.users = response.data;
+      });
+    },
+    setWeek() {
       let today = dayjs().format();
-      console.log(today);
       dayjs.extend(weekOfYear);
-      dayjs.extend(weekYear);
-      console.log(dayjs().day());
-      console.log(dayjs().weekYear());
-      console.log(dayjs(today).week());
+      this.selected_week = { week: dayjs(today).week() };
     },
-    setService(object) {
-      console.log(object);
-      this.selected_service = object;
-    },
-    activeChange() {
-      this.is_active = !this.is_active;
-    },
-    getDayFromWeekNum(week, year, day) {
-      var day_date = new Date(year, 0, day + (week - 1) * 7);
-      while (day_date.getDay() !== 0) {
-        day_date.setDate(day_date.getDate() - 1);
+    hoursList(day) {
+      if (
+        this.selected_service_details &&
+        this.selected_service_details.contrats
+      ) {
+        return this.selected_service_details.contrats[day].hours;
       }
-      return day_date;
+      return [];
     },
-  },
-  computed: {
-    activeDropdown() {
-      return this.is_active ? "is-active" : "";
-    },
-  },
-  watch: {
-    week() {
-      this.$emit("set-week", this.week);
+    editSchedule() {
+      location.href = "/availiability";
     },
   },
 };
@@ -70,6 +72,15 @@ export default {
   <div class="container availability">
     <div class="title is-ancestor">
       <div class="tile is-parent is-vertical">
+        <div class="tile is-child is-fullwidth">
+          <div class="columns is-fullwidth">
+            <div class="column has-text-right">
+              <button class="button is-primary" @click="editSchedule">
+                Editar Disponibilidad
+              </button>
+            </div>
+          </div>
+        </div>
         <div class="tile is-child is-4">
           <p class="is-size-4 has-text-left">Selecciona la compañia</p>
           <div class="select is-size-6 is-fullwidth">
@@ -86,6 +97,17 @@ export default {
         </div>
         <div class="tile is-child is-4">
           <p class="is-size-4 has-text-left">Selecciona la semana</p>
+          <div class="select is-size-6 is-fullwidth">
+            <select v-model="selected_week">
+              <option
+                v-for="(week, index) in weeks"
+                :key="'week_' + index"
+                :value="week"
+              >
+                {{ week.week }}
+              </option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="tile is-parent is-justify-content-space-between">

@@ -10,12 +10,12 @@ const routes = [
   {
     path: "/",
     name: "monitoring",
-    component: AvailabilityView,
+    component: MonitoringView,
   },
   {
     path: "/availiability",
     name: "availiability",
-    component: MonitoringView,
+    component: AvailabilityView,
   },
   {
     path: "/monitoring_services",

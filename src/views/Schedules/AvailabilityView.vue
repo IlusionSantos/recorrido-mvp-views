@@ -43,6 +43,21 @@ export default {
           this.selected_service_details = response.data;
         });
     },
+    saveSchedule() {
+      let monitoring_schedule = {
+        week: this.selected_week.week,
+        monitoring_services_id: this.selected_service.id,
+      };
+      axios
+        .post("http://127.0.0.1:3000/monitoring_schedules", {
+          monitoring_schedule: monitoring_schedule,
+        })
+        .then((response) => {
+          if (response.data) {
+            this.$router.push({ name: "monitoring" });
+          }
+        });
+    },
     loadUsers() {
       axios.get("http://127.0.0.1:3000/users").then((response) => {
         this.users = response.data;
@@ -85,7 +100,9 @@ export default {
         <div class="tile is-child is-fullwidth">
           <div class="columns is-fullwidth">
             <div class="column has-text-right">
-              <button class="button is-primary">Actualizar Horario</button>
+              <button class="button is-primary" @click="saveSchedule">
+                Actualizar Horario
+              </button>
             </div>
           </div>
         </div>
@@ -121,7 +138,7 @@ export default {
       <div v-if="selected_service">
         <div class="columns is-multiline">
           <div class="column is-half">
-            <div class="has-background-primary-light">
+            <div class="has-background-info-light">
               <p class="title">Lunes</p>
               <custom-table
                 :hours="hoursList(0)"
@@ -145,7 +162,7 @@ export default {
             </div>
           </div>
           <div class="column is-half">
-            <div class="has-background-primary-light">
+            <div class="has-background-info-light">
               <p class="title">Miercoles</p>
               <custom-table
                 :hours="hoursList(2)"
@@ -169,7 +186,7 @@ export default {
             </div>
           </div>
           <div class="column is-half">
-            <div class="notification has-background-primary-light">
+            <div class="notification has-background-info-light">
               <p class="title">Viernes</p>
               <custom-table
                 :hours="hoursList(4)"
@@ -193,7 +210,7 @@ export default {
             </div>
           </div>
           <div class="column is-half">
-            <div class="notification has-background-primary-light">
+            <div class="notification has-background-info-light">
               <p class="title">Domingo</p>
               <custom-table
                 :hours="hoursList(6)"
