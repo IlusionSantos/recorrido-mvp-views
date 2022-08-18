@@ -2,12 +2,12 @@
 // @ is an alias to /src
 const dayjs = require("dayjs");
 var weekOfYear = require("dayjs/plugin/weekOfYear");
-
+import ListTable from "@/components/ListTable.vue";
 import axios from "axios";
 
 export default {
   name: "MonitoringView",
-  components: {},
+  components: { ListTable },
   data() {
     return {
       selected_week: { week: 0 },
@@ -16,6 +16,7 @@ export default {
       selected_service: {},
       selected_service_details: {},
       users: [],
+      loading: false,
     };
   },
   mounted() {
@@ -23,38 +24,39 @@ export default {
     this.loadUsers();
   },
   methods: {
+    setDefaultByLocal() {
+      if (localStorage.getItem("service")) {
+        this.selected_service = JSON.parse(localStorage.getItem("service"));
+        this.selected_week = JSON.parse(localStorage.getItem("week"));
+      } else {
+        this.selected_service = this.services[0];
+        this.setWeek();
+      }
+    },
     loadServices() {
       axios
         .get("http://127.0.0.1:3000/monitoring_services")
         .then((response) => {
           this.services = response.data.monitoring_services;
-          this.setWeek();
+
           this.weeks = response.data.weeks;
-          this.selected_service = this.services[0];
+          this.setDefaultByLocal();
         });
     },
     loadServiceDetail() {
       axios
         .get(
-          `http://127.0.0.1:3000/monitoring_services/${this.selected_service.id}/?week=${this.selected_week.week}`
+          `http://127.0.0.1:3000/monitoring_schedules/${this.selected_service.id}/?week=${this.selected_week.week}`
         )
         .then((response) => {
+          this.loading = false;
           this.selected_service_details = response.data;
         });
     },
-    saveSchedule() {
-      let monitoring_schedule = {
-        week: this.selected_week.week,
-        monitoring_services_id: this.selected_service.id,
-      };
-      axios
-        .post("http://127.0.0.1:3000/monitoring_schedules", {
-          monitoring_schedule: monitoring_schedule,
-        })
-        .then((response) => {
-          console.log(response);
-          location.href = "/";
-        });
+    editSchedule() {
+      localStorage.setItem("service", JSON.stringify(this.selected_service));
+      localStorage.setItem("week", JSON.stringify(this.selected_week));
+      location.href = "/availiability";
     },
     loadUsers() {
       axios.get("http://127.0.0.1:3000/users").then((response) => {
@@ -86,10 +88,11 @@ export default {
   computed: {},
   watch: {
     selected_service() {
+      this.loading = true;
       this.loadServiceDetail();
     },
     selected_week() {
-      if (this.selected_service) {
+      if (!this.loading) {
         this.loadServiceDetail();
       }
     },
@@ -141,28 +144,35 @@ export default {
       <div class="tile is-parent is-justify-content-space-between">
         <div class="tile is-child is-3 notification is-primary">
           <p class="title">Lunes</p>
+          <ListTable :hours="hoursList(0)" />
         </div>
         <div class="tile is-child is-3 notification is-info">
           <p class="title">Martes</p>
+          <ListTable :hours="hoursList(1)" />
         </div>
         <div class="tile is-child is-3 notification is-primary">
           <p class="title">Miercoles</p>
+          <ListTable :hours="hoursList(2)" />
         </div>
       </div>
       <div class="tile is-parent is-justify-content-space-between">
         <div class="tile is-child is-3 notification is-primary">
           <p class="title">Jueves</p>
+          <ListTable :hours="hoursList(3)" />
         </div>
         <div class="tile is-child is-3 notification is-info">
           <p class="title">Viernes</p>
+          <ListTable :hours="hoursList(4)" />
         </div>
         <div class="tile is-child is-3 notification is-primary">
           <p class="title">Sabado</p>
+          <ListTable :hours="hoursList(5)" />
         </div>
       </div>
       <div class="tile is-parent is-justify-content-space-between">
         <div class="tile is-child is-3 notification is-primary">
           <p class="title">Domingo</p>
+          <ListTable :hours="hoursList(6)" />
         </div>
       </div>
     </div>

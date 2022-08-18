@@ -17,6 +17,7 @@ export default {
       selected_service: {},
       selected_service_details: {},
       users: [],
+      loading: false,
     };
   },
   mounted() {
@@ -24,13 +25,22 @@ export default {
     this.loadUsers();
   },
   methods: {
+    setDefaultByLocal() {
+      if (localStorage.getItem("service")) {
+        this.selected_service = JSON.parse(localStorage.getItem("service"));
+        this.selected_week = JSON.parse(localStorage.getItem("week"));
+      } else {
+        this.selected_service = this.services[0];
+        this.setWeek();
+      }
+    },
     loadServices() {
       axios
         .get("http://127.0.0.1:3000/monitoring_services")
         .then((response) => {
           this.services = response.data.monitoring_services;
           this.weeks = response.data.weeks;
-          this.selected_service = this.services[0];
+          this.setDefaultByLocal();
         });
     },
     loadServiceDetail() {
@@ -39,6 +49,7 @@ export default {
           `http://127.0.0.1:3000/monitoring_services/${this.selected_service.id}/?week=${this.selected_week.week}`
         )
         .then((response) => {
+          this.loading = false;
           this.selected_service_details = response.data;
         });
     },
@@ -53,7 +64,7 @@ export default {
         })
         .then((response) => {
           if (response.data) {
-            this.$router.push({ name: "monitoring" });
+            location.href = "/";
           }
         });
     },
@@ -87,10 +98,13 @@ export default {
   computed: {},
   watch: {
     selected_service() {
+      this.loading = true;
       this.loadServiceDetail();
     },
     selected_week() {
-      this.loadServiceDetail();
+      if (!this.loading) {
+        this.loadServiceDetail();
+      }
     },
   },
 };
