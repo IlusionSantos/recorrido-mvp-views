@@ -7,7 +7,7 @@ import CustomTable from "@/components/CustomTable.vue";
 import axios from "axios";
 
 export default {
-  name: "MonitoringView",
+  name: "AvailabilityView",
   components: { CustomTable },
   data() {
     return {
@@ -29,15 +29,14 @@ export default {
         .get("http://127.0.0.1:3000/monitoring_services")
         .then((response) => {
           this.services = response.data.monitoring_services;
-          this.selected_service = this.services[0];
           this.weeks = response.data.weeks;
-          this.setWeek();
+          this.selected_service = this.services[0];
         });
     },
     loadServiceDetail() {
       axios
         .get(
-          `http://127.0.0.1:3000/monitoring_services/${this.selected_service.id}`
+          `http://127.0.0.1:3000/monitoring_services/${this.selected_service.id}/?week=${this.selected_week.week}`
         )
         .then((response) => {
           this.selected_service_details = response.data;
@@ -88,6 +87,9 @@ export default {
   computed: {},
   watch: {
     selected_service() {
+      this.loadServiceDetail();
+    },
+    selected_week() {
       this.loadServiceDetail();
     },
   },

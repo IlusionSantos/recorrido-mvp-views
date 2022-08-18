@@ -1,6 +1,5 @@
 <script>
 // @ is an alias to /src
-
 const dayjs = require("dayjs");
 var weekOfYear = require("dayjs/plugin/weekOfYear");
 
@@ -29,18 +28,32 @@ export default {
         .get("http://127.0.0.1:3000/monitoring_services")
         .then((response) => {
           this.services = response.data.monitoring_services;
-          this.selected_service = this.services[0];
-          this.weeks = response.data.weeks;
           this.setWeek();
+          this.weeks = response.data.weeks;
+          this.selected_service = this.services[0];
         });
     },
     loadServiceDetail() {
       axios
         .get(
-          `http://127.0.0.1:3000/monitoring_services/${this.selected_service.id}`
+          `http://127.0.0.1:3000/monitoring_services/${this.selected_service.id}/?week=${this.selected_week.week}`
         )
         .then((response) => {
           this.selected_service_details = response.data;
+        });
+    },
+    saveSchedule() {
+      let monitoring_schedule = {
+        week: this.selected_week.week,
+        monitoring_services_id: this.selected_service.id,
+      };
+      axios
+        .post("http://127.0.0.1:3000/monitoring_schedules", {
+          monitoring_schedule: monitoring_schedule,
+        })
+        .then((response) => {
+          console.log(response);
+          location.href = "/";
         });
     },
     loadUsers() {
@@ -53,6 +66,13 @@ export default {
       dayjs.extend(weekOfYear);
       this.selected_week = { week: dayjs(today).week() };
     },
+    getDayFromWeekNum(week, year, day) {
+      var day_date = new Date(year, 0, day + (week - 1) * 7);
+      while (day_date.getDay() !== 0) {
+        day_date.setDate(day_date.getDate() - 1);
+      }
+      return day_date;
+    },
     hoursList(day) {
       if (
         this.selected_service_details &&
@@ -62,8 +82,16 @@ export default {
       }
       return [];
     },
-    editSchedule() {
-      location.href = "/availiability";
+  },
+  computed: {},
+  watch: {
+    selected_service() {
+      this.loadServiceDetail();
+    },
+    selected_week() {
+      if (this.selected_service) {
+        this.loadServiceDetail();
+      }
     },
   },
 };
