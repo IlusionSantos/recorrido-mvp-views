@@ -29,15 +29,11 @@ export default {
 
     <div id="navbarBasicExample" class="navbar-menu">
       <div class="navbar-start">
-        <router-link class="navbar-item" :to="{ name: 'monitoring' }"
-          >Horarios</router-link
+        <a class="navbar-item" href="/">Horarios</a>
+        <a class="navbar-item" href="/monitoring_services"
+          >Servicios de Monitoreo</a
         >
-        <router-link class="navbar-item" :to="{ name: 'monitoring_services' }"
-          >Servicios de Monitoreo</router-link
-        >
-        <router-link class="navbar-item" :to="{ name: 'engineering' }"
-          >Ingenieros</router-link
-        >
+        <a class="navbar-item" href="/engineers">Ingenieros</a>
       </div>
     </div>
   </nav>
