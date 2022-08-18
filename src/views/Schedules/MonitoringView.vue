@@ -141,38 +141,40 @@ export default {
           </div>
         </div>
       </div>
-      <div class="tile is-parent is-justify-content-space-between">
-        <div class="tile is-child is-3 notification is-primary">
-          <p class="title">Lunes</p>
-          <ListTable :hours="hoursList(0)" />
+      <div v-if="!loading">
+        <div class="tile is-parent is-justify-content-space-between">
+          <div class="tile is-child is-3 notification is-primary">
+            <p class="title">Lunes</p>
+            <ListTable :hours="hoursList(0)" />
+          </div>
+          <div class="tile is-child is-3 notification is-info">
+            <p class="title">Martes</p>
+            <ListTable :hours="hoursList(1)" />
+          </div>
+          <div class="tile is-child is-3 notification is-primary">
+            <p class="title">Miercoles</p>
+            <ListTable :hours="hoursList(2)" />
+          </div>
         </div>
-        <div class="tile is-child is-3 notification is-info">
-          <p class="title">Martes</p>
-          <ListTable :hours="hoursList(1)" />
+        <div class="tile is-parent is-justify-content-space-between">
+          <div class="tile is-child is-3 notification is-primary">
+            <p class="title">Jueves</p>
+            <ListTable :hours="hoursList(3)" />
+          </div>
+          <div class="tile is-child is-3 notification is-info">
+            <p class="title">Viernes</p>
+            <ListTable :hours="hoursList(4)" />
+          </div>
+          <div class="tile is-child is-3 notification is-primary">
+            <p class="title">Sabado</p>
+            <ListTable :hours="hoursList(5)" />
+          </div>
         </div>
-        <div class="tile is-child is-3 notification is-primary">
-          <p class="title">Miercoles</p>
-          <ListTable :hours="hoursList(2)" />
-        </div>
-      </div>
-      <div class="tile is-parent is-justify-content-space-between">
-        <div class="tile is-child is-3 notification is-primary">
-          <p class="title">Jueves</p>
-          <ListTable :hours="hoursList(3)" />
-        </div>
-        <div class="tile is-child is-3 notification is-info">
-          <p class="title">Viernes</p>
-          <ListTable :hours="hoursList(4)" />
-        </div>
-        <div class="tile is-child is-3 notification is-primary">
-          <p class="title">Sabado</p>
-          <ListTable :hours="hoursList(5)" />
-        </div>
-      </div>
-      <div class="tile is-parent is-justify-content-space-between">
-        <div class="tile is-child is-3 notification is-primary">
-          <p class="title">Domingo</p>
-          <ListTable :hours="hoursList(6)" />
+        <div class="tile is-parent is-justify-content-space-between">
+          <div class="tile is-child is-3 notification is-primary">
+            <p class="title">Domingo</p>
+            <ListTable :hours="hoursList(6)" />
+          </div>
         </div>
       </div>
     </div>
