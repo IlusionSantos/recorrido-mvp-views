@@ -30,10 +30,10 @@ export default {
     <div id="navbarBasicExample" class="navbar-menu">
       <div class="navbar-start">
         <a class="navbar-item" href="/">Horarios</a>
-        <a class="navbar-item" href="/monitoring_services"
+        <!--a class="navbar-item" href="/monitoring_services"
           >Servicios de Monitoreo</a
         >
-        <a class="navbar-item" href="/engineers">Ingenieros</a>
+        <a class="navbar-item" href="/engineers">Ingenieros</a-->
       </div>
     </div>
   </nav>
