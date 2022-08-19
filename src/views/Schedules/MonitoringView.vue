@@ -148,8 +148,8 @@ export default {
               </option>
             </select>
           </div>
-          <p class="is-size-6 has-text-left mt-2">
-            {{ getDayFromWeekNum }}
+          <p class="is-size-6 has-text-left mt-3">
+            {{ "del " + getDayFromWeekNum }}
           </p>
         </div>
       </div>
