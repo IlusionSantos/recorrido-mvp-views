@@ -5,7 +5,11 @@ export default {
     hours: Array,
     day: String,
   },
-  methods: {},
+  methods: {
+    userColor(color) {
+      return `background-color: ${color};`;
+    },
+  },
 };
 </script>
 
@@ -13,10 +17,10 @@ export default {
   <table class="table">
     <tbody>
       <tr v-for="(hour, index) in hours" :key="'hour_' + index">
-        <th>
+        <th :class="hour.line_class">
           <p class="has-text-black is-size-6 m-auto">{{ hour.hour_range }}</p>
         </th>
-        <th>
+        <th :style="userColor(hour.user_color)">
           <p v-if="hour.user_name" class="has-text-black is-size-6 m-auto">
             {{ hour.user_name }}
           </p>

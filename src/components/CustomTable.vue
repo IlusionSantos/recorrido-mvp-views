@@ -44,6 +44,9 @@ export default {
           hour.line_class = response.data.line_class;
         });
     },
+    userColor(color) {
+      return `background-color: ${color};`;
+    },
   },
 };
 </script>
@@ -52,7 +55,11 @@ export default {
   <table class="table">
     <thead>
       <th></th>
-      <th v-for="(user, index) in users" :key="'user_' + index">
+      <th
+        v-for="(user, index) in users"
+        :key="'user_' + index"
+        :style="userColor(user.colors)"
+      >
         <p class="has-text-black is-size-6">{{ user.first_name }}</p>
       </th>
     </thead>
