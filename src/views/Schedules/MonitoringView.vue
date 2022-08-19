@@ -68,13 +68,6 @@ export default {
       dayjs.extend(weekOfYear);
       this.selected_week = { week: dayjs(today).week() };
     },
-    getDayFromWeekNum(week, year, day) {
-      var day_date = new Date(year, 0, day + (week - 1) * 7);
-      while (day_date.getDay() !== 0) {
-        day_date.setDate(day_date.getDate() - 1);
-      }
-      return day_date;
-    },
     hoursList(day) {
       if (
         this.selected_service_details &&
@@ -84,8 +77,24 @@ export default {
       }
       return [];
     },
+    getDate(day) {
+      let start_date = new Date(
+        2022,
+        0,
+        (this.selected_week.week - 1) * 7 + day
+      );
+      return `${start_date.toLocaleDateString("es-GT")}`;
+    },
   },
-  computed: {},
+  computed: {
+    getDayFromWeekNum() {
+      let start_date = new Date(2022, 0, (this.selected_week.week - 1) * 7 - 4);
+      let end_date = new Date(2022, 0, (this.selected_week.week - 1) * 7 + 2);
+      return `${start_date.toLocaleDateString(
+        "es-GT"
+      )} al ${end_date.toLocaleDateString("es-GT")}`;
+    },
+  },
   watch: {
     selected_service() {
       this.loading = true;
@@ -135,44 +144,47 @@ export default {
                 :key="'week_' + index"
                 :value="week"
               >
-                {{ week.week }}
+                {{ "Semana " + week.week }}
               </option>
             </select>
           </div>
+          <p class="is-size-6 has-text-left mt-2">
+            {{ getDayFromWeekNum }}
+          </p>
         </div>
       </div>
       <div v-if="!loading">
         <div class="tile is-parent is-justify-content-space-between">
           <div class="tile is-child is-3 notification is-primary">
-            <p class="title">Lunes</p>
+            <p class="title">{{ "Lunes " + getDate(-4) }}</p>
             <ListTable :hours="hoursList(0)" />
           </div>
           <div class="tile is-child is-3 notification is-info">
-            <p class="title">Martes</p>
+            <p class="title">{{ "Martes " + getDate(-3) }}</p>
             <ListTable :hours="hoursList(1)" />
           </div>
           <div class="tile is-child is-3 notification is-primary">
-            <p class="title">Miercoles</p>
+            <p class="title">{{ "Miercoles " + getDate(-2) }}</p>
             <ListTable :hours="hoursList(2)" />
           </div>
         </div>
         <div class="tile is-parent is-justify-content-space-between">
           <div class="tile is-child is-3 notification is-primary">
-            <p class="title">Jueves</p>
+            <p class="title">{{ "Jueves " + getDate(-1) }}</p>
             <ListTable :hours="hoursList(3)" />
           </div>
           <div class="tile is-child is-3 notification is-info">
-            <p class="title">Viernes</p>
+            <p class="title">{{ "Viernes " + getDate(0) }}</p>
             <ListTable :hours="hoursList(4)" />
           </div>
           <div class="tile is-child is-3 notification is-primary">
-            <p class="title">Sabado</p>
+            <p class="title">{{ "Sabado " + getDate(1) }}</p>
             <ListTable :hours="hoursList(5)" />
           </div>
         </div>
         <div class="tile is-parent is-justify-content-space-between">
           <div class="tile is-child is-3 notification is-primary">
-            <p class="title">Domingo</p>
+            <p class="title">{{ "Domingo " + getDate(2) }}</p>
             <ListTable :hours="hoursList(6)" />
           </div>
         </div>

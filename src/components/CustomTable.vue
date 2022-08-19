@@ -64,12 +64,8 @@ export default {
       </th>
     </thead>
     <tbody>
-      <tr
-        v-for="(hour, index) in hours"
-        :key="'hour_' + index"
-        :class="hour.line_class"
-      >
-        <th>
+      <tr v-for="(hour, index) in hours" :key="'hour_' + index">
+        <th :class="hour.line_class">
           <p class="has-text-black is-size-6 m-auto">{{ hour.hour_range }}</p>
         </th>
         <th

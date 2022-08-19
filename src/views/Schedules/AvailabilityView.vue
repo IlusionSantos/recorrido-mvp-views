@@ -78,13 +78,6 @@ export default {
       dayjs.extend(weekOfYear);
       this.selected_week = { week: dayjs(today).week() };
     },
-    getDayFromWeekNum(week, year, day) {
-      var day_date = new Date(year, 0, day + (week - 1) * 7);
-      while (day_date.getDay() !== 0) {
-        day_date.setDate(day_date.getDate() - 1);
-      }
-      return day_date;
-    },
     hoursList(day) {
       if (
         this.selected_service_details &&
@@ -94,8 +87,24 @@ export default {
       }
       return [];
     },
+    getDate(day) {
+      let start_date = new Date(
+        2022,
+        0,
+        (this.selected_week.week - 1) * 7 + day
+      );
+      return `${start_date.toLocaleDateString("es-GT")}`;
+    },
   },
-  computed: {},
+  computed: {
+    getDayFromWeekNum() {
+      let start_date = new Date(2022, 0, (this.selected_week.week - 1) * 7 - 4);
+      let end_date = new Date(2022, 0, (this.selected_week.week - 1) * 7 + 2);
+      return `${start_date.toLocaleDateString(
+        "es-GT"
+      )} al ${end_date.toLocaleDateString("es-GT")}`;
+    },
+  },
   watch: {
     selected_service() {
       this.loading = true;
@@ -145,17 +154,21 @@ export default {
                 :key="'week_' + index"
                 :value="week"
               >
-                {{ week.week }}
+                {{ "Semana " + week.week }}
               </option>
             </select>
           </div>
+
+          <p class="is-size-6 has-text-left mt-2">
+            {{ getDayFromWeekNum }}
+          </p>
         </div>
       </div>
       <div v-if="selected_service">
         <div class="columns is-multiline">
           <div class="column is-half">
             <div class="has-background-info-light">
-              <p class="title">Lunes</p>
+              <p class="title">{{ "Lunes " + getDate(-4) }}</p>
               <custom-table
                 :hours="hoursList(0)"
                 :users="users"
@@ -167,7 +180,7 @@ export default {
           </div>
           <div class="column is-half">
             <div class="has-background-info-light">
-              <p class="title">Martes</p>
+              <p class="title">{{ "Martes " + getDate(-3) }}</p>
               <custom-table
                 :hours="hoursList(1)"
                 :users="users"
@@ -179,7 +192,7 @@ export default {
           </div>
           <div class="column is-half">
             <div class="has-background-info-light">
-              <p class="title">Miercoles</p>
+              <p class="title">{{ "Miercoles " + getDate(-2) }}</p>
               <custom-table
                 :hours="hoursList(2)"
                 :users="users"
@@ -191,7 +204,7 @@ export default {
           </div>
           <div class="column is-half">
             <div class="notification has-background-info-light">
-              <p class="title">Jueves</p>
+              <p class="title">{{ "Jueves " + getDate(-1) }}</p>
               <custom-table
                 :hours="hoursList(3)"
                 :users="users"
@@ -203,7 +216,7 @@ export default {
           </div>
           <div class="column is-half">
             <div class="notification has-background-info-light">
-              <p class="title">Viernes</p>
+              <p class="title">{{ "Viernes " + getDate(0) }}</p>
               <custom-table
                 :hours="hoursList(4)"
                 :users="users"
@@ -215,7 +228,7 @@ export default {
           </div>
           <div class="column is-half">
             <div class="notification has-background-info-light">
-              <p class="title">Sabado</p>
+              <p class="title">{{ "Sabado " + getDate(1) }}</p>
               <custom-table
                 :hours="hoursList(5)"
                 :users="users"
@@ -227,7 +240,7 @@ export default {
           </div>
           <div class="column is-half">
             <div class="notification has-background-info-light">
-              <p class="title">Domingo</p>
+              <p class="title">{{ "Domingo " + getDate(2) }}</p>
               <custom-table
                 :hours="hoursList(6)"
                 :users="users"
